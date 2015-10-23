@@ -43,14 +43,24 @@ int main() {
     std::cout << "Unable to load the shaders" << std::endl;
     return 0;
   }
-  shader.setParameter("texture", sf::Shader::CurrentTexture);
-  
+
   sf::RenderWindow window(sf::VideoMode(800, 4*tileSize.y*mapSize.y), "Basic 2D Lighting");
+
+  float time = 0;
+  shader.setParameter("time", time);
+  shader.setParameter("texture", sf::Shader::CurrentTexture);
   
   sf::Event event;
   while(running) {
     processInput(window);
 
+    shader.setParameter("time", time);
+
+    sf::Vector2i pos = sf::Mouse::getPosition(window);
+    float x = pos.x;
+    
+    time += 0.01;
+    
     window.clear(sf::Color(12, 13, 69));
     window.draw(tileMap, &shader);
     window.display();    
