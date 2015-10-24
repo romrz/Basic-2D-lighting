@@ -54,10 +54,12 @@ int main() {
   while(running) {
     processInput(window);
 
-    shader.setParameter("time", time);
-
     sf::Vector2i pos = sf::Mouse::getPosition(window);
+    //    shader.setParameter("position", sf::Vector2f(pos.x, pos.y));
     float x = pos.x;
+    
+    shader.setParameter("time", x);
+
     
     time += 0.01;
     
