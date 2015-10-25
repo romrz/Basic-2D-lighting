@@ -23,14 +23,14 @@ int main() {
   };
   
   char map[mapSize.y][mapSize.x] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
   };
@@ -39,15 +39,16 @@ int main() {
   tileMap.scale(4, 4);
 
   sf::Shader shader;
-  if (!shader.loadFromFile("shader.vert", "shader.frag")) {
+  if (!shader.loadFromFile("shader.vert", "frag_shader.frag")) {
     std::cout << "Unable to load the shaders" << std::endl;
     return 0;
   }
 
   sf::RenderWindow window(sf::VideoMode(800, 4*tileSize.y*mapSize.y), "Basic 2D Lighting");
+  window.setVerticalSyncEnabled(true);
 
   float time = 0;
-  shader.setParameter("time", time);
+  //shader.setParameter("t", time);
   shader.setParameter("texture", sf::Shader::CurrentTexture);
   
   sf::Event event;
@@ -58,7 +59,7 @@ int main() {
     //    shader.setParameter("position", sf::Vector2f(pos.x, pos.y));
     float x = pos.x;
     
-    shader.setParameter("time", x);
+    shader.setParameter("mouse", pos.x, 4*tileSize.y*mapSize.y-pos.y);
 
     
     time += 0.01;

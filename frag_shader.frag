@@ -1,15 +1,15 @@
-uniform float x;
+
 
 uniform sampler2D texture;
 
-uniform float time;
-//uniform vec2 position;
+//uniform float xx;
+
+uniform vec2 mouse;
 
 void main() {
-  vec2 mouse = vec2(500, 400);
   vec2 pos = mouse/vec2(800, 600);
 
-  float x = time/800.0;
+  float x = pos.x;
 
   vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
 
@@ -17,7 +17,7 @@ void main() {
 
   vec3 ambient = ambientColor.rgb *ambientColor.a;
 
-  float value = smoothstep(x-0.3, x+0.3, gl_FragCoord.xy/vec2(800, 600));
+  float value = smoothstep(0.0, 0.3, distance(gl_FragCoord.xy/vec2(800, 600), pos));
   vec3 intensity = ambient + vec3(value);
   
   vec4 final = mix(vec4(0.0, 0.0, 0.0, 1.0), pixel, clamp(1.0-value, 0.1, 1.0));
