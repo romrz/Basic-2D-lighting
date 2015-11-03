@@ -44,11 +44,11 @@ int main() {
     return 0;
   }
 
-  sf::RenderWindow window(sf::VideoMode(800, 4*tileSize.y*mapSize.y), "Basic 2D Lighting");
+  sf::RenderWindow window(sf::VideoMode(800, 640/*4*tileSize.y*mapSize.y*/), "Basic 2D Lighting");
   window.setVerticalSyncEnabled(true);
 
   float time = 0;
-  //shader.setParameter("t", time);
+  shader.setParameter("time", time);
   shader.setParameter("texture", sf::Shader::CurrentTexture);
   
   sf::Event event;
@@ -56,11 +56,9 @@ int main() {
     processInput(window);
 
     sf::Vector2i pos = sf::Mouse::getPosition(window);
-    //    shader.setParameter("position", sf::Vector2f(pos.x, pos.y));
-    float x = pos.x;
     
     shader.setParameter("mouse", pos.x, 4*tileSize.y*mapSize.y-pos.y);
-
+    shader.setParameter("time", time);
     
     time += 0.01;
     
