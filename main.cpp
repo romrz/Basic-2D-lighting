@@ -9,6 +9,15 @@ bool running = true;
 int main() {
   sf::Vector2i mapSize(15, 10);
   sf::Vector2i tileSize(16, 16);
+
+  sf::Texture torchTexture;
+  if (!torchTexture.loadFromFile("torch.png")) {
+    std::cout << "Unable to load the texture" << std::endl;
+    return 0;
+  }
+
+  sf::Sprite torch(torchTexture, sf::IntRect(0, 0, 32, 48));
+  torch.scale(4,4);
   
   sf::Texture texture;
   if (!texture.loadFromFile("tileset.png")) {
@@ -38,8 +47,9 @@ int main() {
   TileMap tileMap(mapSize, tileSize, &map[0][0], &tileset[0]);
   tileMap.scale(4, 4);
 
+  
   sf::Shader shader;
-  if (!shader.loadFromFile("shader.vert", "frag_shader.frag")) {
+ if (!shader.loadFromFile("shader.vert", "frag_shader.frag")) {
     std::cout << "Unable to load the shaders" << std::endl;
     return 0;
   }
@@ -48,6 +58,8 @@ int main() {
   window.setVerticalSyncEnabled(true);
 
   float time = 0;
+  float animTime = 0;
+  int frame = 0;
   shader.setParameter("time", time);
   shader.setParameter("texture", sf::Shader::CurrentTexture);
   
@@ -56,6 +68,15 @@ int main() {
     processInput(window);
 
     sf::Vector2i pos = sf::Mouse::getPosition(window);
+    torch.setPosition(pos.x - 64, pos.y - 96);
+
+    if(animTime >= 1) {
+      frame++;
+      if(frame == 3) frame = 0;
+      torch.setTextureRect(sf::IntRect(frame*32, 0, 32, 48));
+      animTime = 0;
+    }
+    animTime += 0.1;
     
     shader.setParameter("mouse", pos.x, 4*tileSize.y*mapSize.y-pos.y);
     shader.setParameter("time", time);
@@ -64,6 +85,7 @@ int main() {
     
     window.clear(sf::Color(12, 13, 69));
     window.draw(tileMap, &shader);
+    window.draw(torch);
     window.display();    
   }
 
