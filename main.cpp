@@ -49,39 +49,47 @@ int main() {
 
   
   sf::Shader shader;
- if (!shader.loadFromFile("shader.vert", "frag_shader.frag")) {
+  if (!shader.loadFromFile("shader.vert", "frag_shader.frag")) {
     std::cout << "Unable to load the shaders" << std::endl;
     return 0;
   }
 
-  sf::RenderWindow window(sf::VideoMode(800, 640/*4*tileSize.y*mapSize.y*/), "Basic 2D Lighting");
+  sf::RenderWindow window(sf::VideoMode(800, 640), "Basic 2D Lighting");
   window.setVerticalSyncEnabled(true);
 
-  float time = 0;
   float animTime = 0;
   int frame = 0;
-  shader.setParameter("time", time);
+
   shader.setParameter("texture", sf::Shader::CurrentTexture);
+  shader.setParameter("resolution", window.getSize().x, window.getSize().y);
+  shader.setParameter("ambientData", 0.3, 0.3, 0.8, 0.3);
+  shader.setParameter("lightData", 1.0, 0.8, 0.2, 2);
+  shader.setParameter("lightSize", 0.3, 0);
+
+  sf::Clock clock;
+  sf::Time frameTime, time;
   
   sf::Event event;
   while(running) {
+    frameTime = clock.restart();
+    time += frameTime;
+    
     processInput(window);
 
     sf::Vector2i pos = sf::Mouse::getPosition(window);
-    torch.setPosition(pos.x - 64, pos.y - 96);
+    torch.setPosition(400 - 64, (640-250) - 96);
 
-    if(animTime >= 1) {
+    if(animTime >= 150) {
       frame++;
       if(frame == 3) frame = 0;
       torch.setTextureRect(sf::IntRect(frame*32, 0, 32, 48));
       animTime = 0;
     }
-    animTime += 0.1;
-    
-    shader.setParameter("mouse", pos.x, 4*tileSize.y*mapSize.y-pos.y);
-    shader.setParameter("time", time);
-    
-    time += 0.01;
+    animTime += frameTime.asMilliseconds();
+
+    shader.setParameter("mouse", 400, 250);
+    //    shader.setParameter("mouse", pos.x, 4*tileSize.y*mapSize.y-pos.y);
+    shader.setParameter("time", 10 * time.asSeconds(), 0);
     
     window.clear(sf::Color(12, 13, 69));
     window.draw(tileMap, &shader);
